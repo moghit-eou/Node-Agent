@@ -33,12 +33,15 @@ func StartServer(port string) {
 func handleConnection(conn net.Conn) error {
 	defer conn.Close()
 	
+	// I still have to pay attention to DDOS
+	// to do : set a timeout for the connection
+ 
 	reader := bufio.NewReader(conn)
 	message , err := reader.ReadString('\n')
 	
 	if err != nil {
 		log.Printf("Error reading message %v", err)
-		return 
+		return err 
 	}
 
 	// chiwiwi
