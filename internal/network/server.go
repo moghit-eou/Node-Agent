@@ -29,5 +29,6 @@ func StartServer(port string) {
 } 
 
 func handleConnection(conn net.Conn) {
+	defer conn.Close()
 	conn.Write([]byte("RECEIVED \n"))
 }
