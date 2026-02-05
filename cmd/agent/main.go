@@ -3,15 +3,15 @@ package main
 import (
 	
 	"os"
-	"fmt"
 	"node-agent/internal/network"
+	"log"
 
 )
 
 func main() {
 	
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <port> !!!") // avoid 1-1023 ports
+		log.Println("Usage: go run main.go <port> !!!") // avoid 1-1023 ports
 		return 
 	}
 	
@@ -19,4 +19,5 @@ func main() {
 	network.StartServer(port)
 	  
 } 
+
 

@@ -1,8 +1,10 @@
 package network
 
 import (
-	"fmt"
 	"net"
+	"bufio"
+	"log"
+	"fmt"
 )
 
 func StartServer(port string) {
@@ -10,25 +12,48 @@ func StartServer(port string) {
 	Listener , err := net.Listen ("tcp" , ":" + port)
 	
 	if err != nil {
-		fmt.Println("Error starting server:", err)
+		log.Println("Error starting server:", err)
 		return 
 	}
 
-	fmt.Println("server is listening on port " + port + "")
+	log.Println("server is listening on port " + port + "")
 	defer Listener.Close()
 
 	for {
 		conn , err := Listener.Accept()
 		if err != nil {
-			fmt.Println("Error accepting connection:", err)
+			log.Println("Error accepting connection:", err)
 			continue 
 		}
-		fmt.Println("new connection from", conn.RemoteAddr())
+		log.Println("new connection from", conn.RemoteAddr())
 		go handleConnection(conn)
 	}
 } 
 
-func handleConnection(conn net.Conn) {
+func handleConnection(conn net.Conn) error {
 	defer conn.Close()
-	conn.Write([]byte("RECEIVED \n"))
+	
+	reader := bufio.NewReader(conn)
+	message , err := reader.ReadString('\n')
+	
+	if err != nil {
+		log.Printf("Error reading message %v", err)
+		return 
+	}
+
+	// chiwiwi
+
+	response := fmt.Sprintf("Echo -> %s" , message) 
+
+	_, err = conn.Write([]byte(response))
+		// here basicaly converting String into bytes and send it back to the client
+	if err != nil {
+		log.Printf("sending response failed: %v", err)
+	}
+	
+	log.Printf("Received message: %s", message)
+	log.Println("Echoed message back to", conn.RemoteAddr())
+
+	return nil	
+		 
 }
