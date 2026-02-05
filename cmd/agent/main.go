@@ -4,25 +4,19 @@ import (
 	
 	"os"
 	"fmt"
-	"net"
+	"node-agent/internal/network"
+
 )
 
 func main() {
 	
 	if len(os.Args) < 2 {
-		println("Usage: go run main.go <port>")
+		fmt.Println("Usage: go run main.go <port> !!!") // avoid 1-1023 ports
 		return 
 	}
 	
 	port := os.Args[1]
-	fmt.Println("Port:", port)
-
-	listener , err := net.Listen ("tcp" , ":" + port)
-	
-	if err != nil {
-		fmt.Println("Error starting server:", err)
-		return 
-	}
-
-	fmt.Println("Server listening on port", listener.Addr().String())
+	network.StartServer(port)
+	  
 } 
+
