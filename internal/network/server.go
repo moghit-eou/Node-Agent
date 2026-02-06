@@ -33,7 +33,7 @@ func StartServer(port string) {
 func handleConnection(conn net.Conn) error {
 	defer conn.Close()
 	
-	// I still have to pay attention to DDOS
+	// I still have to pay attention to DDOS attcks 
 	// to do : set a timeout for the connection
  
 	reader := bufio.NewReader(conn)
@@ -46,7 +46,7 @@ func handleConnection(conn net.Conn) error {
 
 	// chiwiwi
 
-	response := fmt.Sprintf("Echo -> %s" , message) 
+	response := fmt.Sprintf("ack -> %s" , message) 
 
 	_, err = conn.Write([]byte(response))
 		// here basicaly converting String into bytes and send it back to the client
