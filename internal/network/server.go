@@ -42,7 +42,8 @@ func handleConnection(conn net.Conn) error {
 	// to do : set a timeout for the connection
 	
 
-	// conn is a stream of bytes, I need to decode it into a Request struct and encode the Response struct back to the client
+	// conn is a stream of bytes
+	// I need to decode it into a Request struct and encode the Response struct back to the client
 	decoder := json.NewDecoder(conn)
 	encoder := json.NewEncoder(conn)
 	
