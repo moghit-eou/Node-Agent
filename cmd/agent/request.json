@@ -3,10 +3,4 @@
     "Payload": "just checking here"
 }
 
-{
-    "Type": "job",
-    "Payload": "just checking here"
-}
 
-// go run main.go 
-// nc localhost <port> < request.json
