@@ -4,6 +4,7 @@ import (
 	"net"
 	"log"
  	"encoding/json"
+	"io"
 )
 
 func StartServer(port string) {
@@ -51,6 +52,11 @@ func handleConnection(conn net.Conn) error {
 		request := Request{}
 		err := decoder.Decode(&request)
 		
+		if err == io.EOF {
+			log.Printf("client %s disconnected", conn.RemoteAddr())
+			return nil 
+		}
+
 		if err != nil {
 			log.Printf("decoding request failed: %v", err)
 			return err 
@@ -77,7 +83,7 @@ func handleConnection(conn net.Conn) error {
 			default:
 				response = Response {
 					Status: "error",
-					Message: "Unknown request type"
+					Message: "Unknown request type",
 				}	
 			
 		}
