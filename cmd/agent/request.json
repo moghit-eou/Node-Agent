@@ -1,5 +1,5 @@
 {
-    "Type": "Request",
+    "Type": "health-check",
     "Payload": "just checking here"
-    
 }
+
