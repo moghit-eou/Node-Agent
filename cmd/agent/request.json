@@ -1,6 +1,6 @@
 {
-    "Type": "health-check",
-    "Payload": "just checking here"
+    "Type": "job",
+    "Payload": "ls -al"
 }
 
 
