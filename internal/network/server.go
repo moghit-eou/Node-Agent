@@ -5,6 +5,7 @@ import (
 	"log"
  	"encoding/json"
 	"io"
+	"node-agent/internal/control"
 )
 
 func StartServer(port string) {
@@ -76,9 +77,11 @@ func handleConnection(conn net.Conn) error {
 				}
 			
 			case "job":
+				result := control.HandleJob(request.Payload)
+
 				response = Response {
 					Status : "pending",
-					Message : "Job is being processed " + request.Payload,
+					Message : result,
 				}	
 				
 			default:
