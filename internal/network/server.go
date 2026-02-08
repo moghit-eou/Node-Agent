@@ -80,7 +80,7 @@ func handleConnection(conn net.Conn) error {
 				result := control.HandleJob(request.Payload)
 
 				response = Response {
-					Status : "pending",
+					Status : "success",
 					Message : result,
 				}	
 				
