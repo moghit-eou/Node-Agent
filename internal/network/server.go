@@ -71,20 +71,20 @@ func handleConnection(conn net.Conn) error {
 			
 			case "health-check":
 				response = Response{
-					Status: "ok",
-					Message: request.Payload,
+					Status : "ok",
+					Message  : request.Payload,
 				}
 			
 			case "job":
 				response = Response {
-					Status: "pending",
-					Message: "Job is being processed " + request.Payload,
+					Status : "pending",
+					Message : "Job is being processed " + request.Payload,
 				}	
 				
 			default:
 				response = Response {
-					Status: "error",
-					Message: "Unknown request type",
+					Status : "error",
+					Message : "Unknown request type",
 				}	
 			
 		}
