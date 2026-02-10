@@ -21,7 +21,6 @@ func StartServer(port string) {
 	defer Listener.Close() // runs after function exist
 
 	for {
-		
 		// conn : tcp socket 
 		// Listener : door to the socket ( bound to a port )
 
@@ -64,7 +63,8 @@ func handleConnection(conn net.Conn) error {
 			return err 
 		}
 		
-		log.Printf("Received request : Type = %s, Payload = %s", request.Type, request.Payload)
+		log.Printf("Received request : Type = %s, Payload = %s",
+		 request.Type, request.Payload)
 
 		var response Response
 
