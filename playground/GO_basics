@@ -1,0 +1,63 @@
+why the name cmd for the folder
+
+Ports 1–1023 are privileged ports.
+Examples of privileged ports:
+
+
+----
+listener.Close() releases the listening socket and unblocks Accept().
+defer ? -> defer guarantees it’s released when the program exits
+--
+
+
+go function_name : is  goroutine ????
+
+
+--
+
+A .go file must always start with package <name> — even if it has no code yet.
+---
+Go only allows := when at least one variable is new.
+_ is not a variable
+_ in Go = blank identifier
+
+It means:
+
+“I don’t care about this value.”
+------
+In Go, Capital Letter = Public (Exported). Lowercase = Private (Hidden).
+
+
+----
+json.newDecoder(str) -> DOES NOT TAKE A STRING 
+it take ( files , network connections , buffers , streams)
+
+---
+type Request struct 
+{
+   First_number int  `json:"first"`
+   Second_number int `json:"second"`
+}
+
+func main() {
+
+  
+  str := `{  "first" : 1 , "second" : 2 }` // so basically this is a string 
+
+when try to map varibale into struct 
+try to use struct tag instead of actual variables
+
+aka : `json:"Nmae"`
+----
+  
+
+go mod ( path ) : update your go.mod file 
+
+Docker does NOT send stdout and stderr separately. Instead:
+
+it multiplexes them into one binary stream
+
+prefixes frames with headers
+---
+
+You cannot “import another file” in the same package in Go.
