@@ -6,14 +6,11 @@ import (
 	"bytes"
 
 )
-type Result struct 
-{
-	Stdout string 
-	Stderr string 
-	ExitCode int 
-}
+ 
+/*Only files with the same package 
+ can directly use each other types without import */
 
-func RunCommand(command string ) (*Result , error) {
+func RunCommand_2(command string ) (*Result , error) {
 
 	cmd := exec.Command("sh" , "-c" , command )
 
