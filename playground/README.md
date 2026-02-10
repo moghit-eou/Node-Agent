@@ -1,8 +1,8 @@
-# Playground 
+# **These files are NOT part of the production build.**
+ 
 
 **implementation Note:**  directory contains experimental code ,and learning notes used during the development of the Node Agent. 
 
-**These files are NOT part of the production build.**
 
 
 ## Purpose
