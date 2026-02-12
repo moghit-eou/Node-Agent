@@ -1,7 +1,7 @@
 [
   {
     "Type": "health-check",
-    "Payload": "ok"
+    "Payload": "system is running"
   },
   {
     "Type": "job",
