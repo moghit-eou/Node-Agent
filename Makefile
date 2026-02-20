@@ -2,7 +2,7 @@ APP := node-agent
 CMD := ./cmd/agent
 BIN := bin
 
-.PHONY: run  fmt tidy
+.PHONY: run clean fmt tidy
 
 run:
 	go run $(CMD) 8080
@@ -14,4 +14,6 @@ tidy:
 	go mod tidy
 
 
- 
+
+#clean:
+#	rm -rf $(BIN)
