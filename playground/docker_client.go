@@ -5,29 +5,30 @@ import (
 	"fmt"
 	"github.com/docker/docker/client"
 )
-// client != Client 
+
+// client != Client
 //client (lowercase) is a package (folder / namespace)
 //Client (Capital C) is an exported struct type defined inside that package
 
 //type Client struct {
-	// contains filtered or unexported fields
-	// definition 
-	// from the documentaton
+// contains filtered or unexported fields
+// definition
+// from the documentaton
 //}
 
- type DockerClient struct {
+type DockerClient struct {
 	cli *client.Client // to keep avoiding using client.client
 }
 
 func NewDockerClient() (*DockerClient, error) {
- 	cli, err := client.NewClientWithOpts(client.FromEnv, 
-		client.WithAPIVersionNegotiation() )  
-		//client.FromEnv : looking for path of docker.sock and variables in geneeral
-		//initializes a new API client 
-	
-		if err != nil {
-		return nil, 
-		fmt.Errorf("failed to create docker client: %w", err)
+	cli, err := client.NewClientWithOpts(client.FromEnv,
+		client.WithAPIVersionNegotiation())
+	//client.FromEnv : looking for path of docker.sock and variables in geneeral
+	//initializes a new API client
+
+	if err != nil {
+		return nil,
+			fmt.Errorf("failed to create docker client: %w", err)
 	}
 
 	return &DockerClient{cli: cli}, nil

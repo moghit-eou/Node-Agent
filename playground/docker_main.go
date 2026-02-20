@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"time"
-//	"node-agent/playground" -> this is not allowed
+	//	"node-agent/playground" -> this is not allowed
 )
-
 
 var docker *DockerClient
 
@@ -23,8 +22,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-
-	result , err := docker.Run(ctx , "echo hello" )
+	result, err := docker.Run(ctx, "echo hello")
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		return
@@ -32,5 +30,4 @@ func main() {
 
 	fmt.Printf("Stdout: %s\nStderr: %s", result.Stdout, result.Stderr)
 
-	
 }

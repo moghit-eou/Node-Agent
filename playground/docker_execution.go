@@ -4,19 +4,18 @@ import (
 	"bytes"
 	"context"
 	"fmt"
- 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
-type Result struct 
-{
-	Stdout string 
-	Stderr string 
-	ExitCode int 
+type Result struct {
+	Stdout   string
+	Stderr   string
+	ExitCode int
 }
 
 func (d *DockerClient) Run(ctx context.Context, command string) (*Result, error) {
-	
+
 	// 1. CONFIG: Use Alpine Linux
 	config := &container.Config{
 		Image: "alpine",
@@ -43,21 +42,21 @@ func (d *DockerClient) Run(ctx context.Context, command string) (*Result, error)
 	// 5. WAIT for it to finish
 	statusCh, errCh := d.cli.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
 	select {
-		case err := <-errCh:
-			if err != nil {
-				return nil, fmt.Errorf("wait error: %w", err)
-			}
-		case <-statusCh:
-			// Success
-		case <-ctx.Done():
-			return nil, fmt.Errorf("timeout reached")
+	case err := <-errCh:
+		if err != nil {
+			return nil, fmt.Errorf("wait error: %w", err)
+		}
+	case <-statusCh:
+		// Success
+	case <-ctx.Done():
+		return nil, fmt.Errorf("timeout reached")
 	}
 
 	// 6. LOGS: Fetch and clean the output
-		out, err := d.cli.ContainerLogs(ctx, containerID, container.LogsOptions{ShowStdout: true, ShowStderr: true})
-		if err != nil {
-			return nil, fmt.Errorf("logs failed: %w", err)
-		}
+	out, err := d.cli.ContainerLogs(ctx, containerID, container.LogsOptions{ShowStdout: true, ShowStderr: true})
+	if err != nil {
+		return nil, fmt.Errorf("logs failed: %w", err)
+	}
 
 	// Docker logs have headers. We use stdcopy to strip them.
 	var stdout, stderr bytes.Buffer

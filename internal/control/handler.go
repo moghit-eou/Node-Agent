@@ -1,8 +1,8 @@
 package control
 
 import (
-	"node-agent/internal/execution"
 	"fmt"
+	"node-agent/internal/execution"
 )
 
 func HandleJob(commandPayLoad string) string {
@@ -11,16 +11,16 @@ func HandleJob(commandPayLoad string) string {
 		return "Error : Empty command"
 	}
 
-	result , err := execution.RunCommand(commandPayLoad)
+	result, err := execution.RunCommand(commandPayLoad)
 
 	if err != nil {
-		return fmt.Sprintf("Something went wrong: %v" , err )
+		return fmt.Sprintf("Something went wrong: %v", err)
 
 	}
 
 	response := fmt.Sprintf("Stdout : %s \nStderr: %s\nExistcode: %d",
-				result.Stdout , result.Stderr , result.ExitCode)
+		result.Stdout, result.Stderr, result.ExitCode)
 
-	return response 
+	return response
 
 }
