@@ -23,7 +23,8 @@ node-agent/
 │   ├── control/              # Job Handling Logic
 │   └── execution/            # Docker SDK Integration (Sandboxing)
 │
-├── playground/               # 🧪 Folder for experiments
+├── playground/               #  Folder for experiments
 │
 ├── go.mod                    # Dependencies
+
 └── README.md                 # Project Documentation
