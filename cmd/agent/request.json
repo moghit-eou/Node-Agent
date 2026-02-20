@@ -1,10 +1,6 @@
-[
-  {
-    "Type": "health-check",
-    "Payload": "system is running"
-  },
-  {
+{
     "Type": "job",
-    "Payload": "ls -a1"
-  }
-]
+    "Payload": "ls -al"
+}
+
+
