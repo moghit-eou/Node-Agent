@@ -2,10 +2,19 @@ APP := node-agent
 CMD := ./cmd/agent
 BIN := bin
 
-.PHONY: run clean fmt tidy
+PORT ?= 8080
 
-run:
-	go run $(CMD) 8080
+.PHONY:all build run clean fmt tidy
+
+all: clean fmt tidy build
+
+build:
+	@echo "=> Building the production binary..."
+	go build -o $(BIN)/$(APP) $(CMD)
+
+run: build
+	@echo "=> Starting the compiled node-agent..."
+	./$(BIN)/$(APP) $(PORT)
 
 fmt:
 	go fmt ./...
