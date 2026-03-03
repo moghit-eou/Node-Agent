@@ -13,5 +13,5 @@ fmt:
 tidy:
 	go mod tidy
 
-#clean:
-#	rm -rf $(BIN)
+clean:
+	rm -rf $(BIN)
