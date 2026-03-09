@@ -18,7 +18,6 @@ func init() {
 }
 
 func main() {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -29,5 +28,4 @@ func main() {
 	}
 
 	fmt.Printf("Stdout: %s\nStderr: %s", result.Stdout, result.Stderr)
-
 }

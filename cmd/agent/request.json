@@ -1,6 +1,6 @@
 {
-    "Type": "job",
-    "Payload": "ls -al"
+    "_Type_": "job",
+    "_payload_": "ls"
 }
 
 

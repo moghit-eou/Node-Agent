@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/pkg/stdcopy"
 )
@@ -15,7 +16,6 @@ type Result struct {
 }
 
 func (d *DockerClient) Run(ctx context.Context, command string) (*Result, error) {
-
 	// 1. CONFIG: Use Alpine Linux
 	config := &container.Config{
 		Image: "alpine",

@@ -5,13 +5,12 @@ import (
 	"io"
 	"log"
 	"net"
+
 	"node-agent/internal/control"
 )
 
 func StartServer(port string) {
-
 	Listener, err := net.Listen("tcp", ":"+port)
-
 	if err != nil {
 		log.Println("Error starting server:", err)
 		return
@@ -90,12 +89,10 @@ func handleConnection(conn net.Conn) error {
 		}
 
 		err = encoder.Encode(response)
-
 		if err != nil {
 			log.Printf("sending response failed: %v", err)
 		}
 
 	}
 	return nil
-
 }

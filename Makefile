@@ -6,7 +6,9 @@ PORT ?= 8080
 
 .PHONY:all build run clean fmt tidy
 
-all: clean fmt tidy build
+all:
+	@echo "=>(all) hitting the start..."
+	clean fmt tidy build
 
 build:
 	@echo "=> Building the production binary..."

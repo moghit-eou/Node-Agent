@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
-	"node-agent/internal/network"
 	"os"
+
+	"node-agent/internal/network"
 )
 
 func main() {
-
 	if len(os.Args) < 2 {
 		log.Println("usage: go run main.go <port> !!!") // I should avoid 1-1023 ports
 		return
@@ -15,5 +15,4 @@ func main() {
 
 	port := os.Args[1]
 	network.StartServer(port)
-
 }

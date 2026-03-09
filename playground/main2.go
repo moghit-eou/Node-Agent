@@ -3,26 +3,26 @@ package main
 // go run main.go
 // nc localhost <port> < request.json
 import (
+	"bytes"
+	"fmt"
 	"os"
+	"os/exec"
+
 	//"node-agent/internal/network"
 	//"log"
 
-	"bytes"
-	"fmt"
 	"node-agent/internal/control"
 	"node-agent/internal/execution"
-	"os/exec"
 )
 
 func main() {
-
 	if len(os.Args) < 2 {
 		//		log.Println("usage: go run main.go <port> !!!") // I should avoid 1-1023 ports
 		//		return
 	}
 
-	//We use sh -c to bridge the gap.
-	//It takes your single string and executes it like a real terminal.
+	// We use sh -c to bridge the gap.
+	// It takes your single string and executes it like a real terminal.
 	command := "ls -al"
 	cmd := exec.Command("sh", "-c", command)
 	var stderr, stdout bytes.Buffer
