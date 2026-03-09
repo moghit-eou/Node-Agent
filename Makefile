@@ -4,7 +4,7 @@ BIN := bin
 
 PORT ?= 8080
 
-.PHONY:all build run clean fmt tidy
+.PHONY: all build run clean fmt tidy
 
 all:
 	@echo "=>(all) hitting the start..."
@@ -26,3 +26,9 @@ tidy:
 
 clean:
 	rm -rf $(BIN)
+
+.PHONY: test-request
+
+test-request:
+		@echo "=> Starting the compiled node-agent..."
+		nc localhost $(PORT) < $(CMD)/request.json
