@@ -28,7 +28,7 @@ node-agent/
 ├── go.mod                    # Dependencies
 
 └── README.md                 # Project Documentation
-
+```
 ```mermaid
 graph TD
     subgraph cmd ["cmd/agent"]
