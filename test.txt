@@ -1,1 +1,1 @@
-aws_secret_key = "888888888888"
+export aws_secret_key = "888888888888"
