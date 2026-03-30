@@ -9,7 +9,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Println("usage: go run main.go <port> !!!") // I should avoid 1-1023 ports
+		log.Println("usage: go run main.go <port> !!!") // should avoid 1-1023 ports
 		return
 	}
 

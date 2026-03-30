@@ -22,7 +22,7 @@ func RunCommand(command string) (*Result, error) {
 
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to docker: %v", err)
+		return nil, fmt.Errorf("failed to connect to docker: %w", err)
 	}
 	defer cli.Close()
 
@@ -54,7 +54,7 @@ func RunCommand(command string) (*Result, error) {
 	select {
 	case err := <-errCh:
 		if err != nil {
-			return nil, fmt.Errorf("execution error: %v", err)
+			return nil, fmt.Errorf("execution error: %w", err)
 		}
 	case <-statusCh:
 	case <-waitCtx.Done():
@@ -63,7 +63,7 @@ func RunCommand(command string) (*Result, error) {
 
 	out, err := cli.ContainerLogs(ctx, containerID, container.LogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
-		return nil, fmt.Errorf("log retrieval failed: %v", err)
+		return nil, fmt.Errorf("log retrieval failed: %w", err)
 	}
 
 	var stdout, stderr bytes.Buffer
