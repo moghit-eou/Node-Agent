@@ -12,7 +12,7 @@ import (
 func StartServer(port string) {
 	Listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
-		log.Println("Error starting server:", err)
+		log.Println("Error starting server: %v\n", err)
 		return
 	}
 
@@ -25,7 +25,7 @@ func StartServer(port string) {
 
 		conn, err := Listener.Accept()
 		if err != nil {
-			log.Println("Error accepting connection:", err)
+			log.Println("Error accepting connection: %v\n", err)
 			continue
 		}
 		log.Println("new connection from", conn.RemoteAddr())
