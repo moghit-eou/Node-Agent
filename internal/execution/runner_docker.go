@@ -4,74 +4,98 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 )
 
-type Result struct {
-	Stdout   string
-	Stderr   string
-	ExitCode int
+type DockerExecutor struct {
+	cli   *client.Client
+	image string
 }
 
-func RunCommand(command string) (*Result, error) {
-	ctx := context.Background()
+// compile-time check: if DockerExecutor is missing a method, this line
+// fails at build time — not at runtime in production
+var _ Executor = (*DockerExecutor)(nil)
 
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+func NewDockerExecutor(image string) (*DockerExecutor, error) {
+	cli, err := client.NewClientWithOpts(
+		client.FromEnv,
+		client.WithAPIVersionNegotiation(),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to docker: %w", err)
+		return nil, fmt.Errorf("failed to create docker client: %w", err)
 	}
-	defer cli.Close()
+	return &DockerExecutor{cli: cli, image: image}, nil
+}
 
-	config := &container.Config{
-		Image: "alpine",
+func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, error) {
+	
+	cfg := &container.Config{
+		Image: d.image,
 		Cmd:   []string{"sh", "-c", command},
-		Tty:   false, // to separate stdout and stderr streams
+		Tty:   false, //merges stdout and stderr into one stream
 	}
 
-	resp, err := cli.ContainerCreate(ctx, config, nil, nil, nil, "")
+	resp, err := d.cli.ContainerCreate(ctx, cfg, nil, nil, nil, "")
 	if err != nil {
-		return nil, fmt.Errorf("container create failed: %v", err)
+		return nil, fmt.Errorf("container create failed: %w", err)
 	}
+	
+	//every subsequent call (Start, Wait, Logs, Remove) needs this ID
 	containerID := resp.ID
 
 	defer func() {
-		_ = cli.ContainerRemove(ctx, containerID, container.RemoveOptions{Force: true})
+		_ = d.cli.ContainerRemove(
+			context.Background(),
+			containerID,
+			container.RemoveOptions{Force: true},
+		)
 	}()
 
-	if err := cli.ContainerStart(ctx, containerID, container.StartOptions{}); err != nil {
-		return nil, fmt.Errorf("container start failed: %v", err)
+
+	if err := d.cli.ContainerStart(ctx, containerID, container.StartOptions{}); err != nil {
+		return nil, fmt.Errorf("container start failed: %w", err)
 	}
 
-	//  job 10 seconds to finish, otherwise we kill it.
-	waitCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
+	statusCh, errCh := d.cli.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
 
-	statusCh, errCh := cli.ContainerWait(waitCtx, containerID, container.WaitConditionNotRunning)
 	select {
+	case <-ctx.Done():
+		return nil, fmt.Errorf("container timed out: %w", ctx.Err())
 	case err := <-errCh:
 		if err != nil {
-			return nil, fmt.Errorf("execution error: %w", err)
+			return nil, fmt.Errorf("container wait error: %w", err)
 		}
-	case <-statusCh:
-	case <-waitCtx.Done():
-		return nil, fmt.Errorf("execution timed out")
+	case <-statusCh: //the container stopped successfully”
 	}
 
-	out, err := cli.ContainerLogs(ctx, containerID, container.LogsOptions{ShowStdout: true, ShowStderr: true})
+	out, err := d.cli.ContainerLogs(
+		context.Background(),
+		containerID,
+		container.LogsOptions{ShowStdout: true, ShowStderr: true},
+	)
 	if err != nil {
 		return nil, fmt.Errorf("log retrieval failed: %w", err)
 	}
+	defer out.Close()
 
 	var stdout, stderr bytes.Buffer
-	stdcopy.StdCopy(&stdout, &stderr, out)
+	if _, err := stdcopy.StdCopy(&stdout, &stderr, out); err != nil {
+		return nil, fmt.Errorf("log demux failed: %w", err)
+	}
 
 	return &Result{
 		Stdout:   stdout.String(),
 		Stderr:   stderr.String(),
 		ExitCode: 0,
 	}, nil
+}
+
+func (d *DockerExecutor) Close() error {
+	if err := d.cli.Close(); err != nil {
+		return fmt.Errorf("failed to close docker client: %w", err)
+	}
+	return nil
 }
