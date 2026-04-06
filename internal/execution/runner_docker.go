@@ -15,9 +15,8 @@ type DockerExecutor struct {
 	image string
 }
 
-// compile-time check: if DockerExecutor is missing a method, this line
-// fails at build time — not at runtime in production
-var _ Executor = (*DockerExecutor)(nil)
+// compile time check. if DockerExecutor is missing a method, this line
+ var _ Executor = (*DockerExecutor)(nil)
 
 func NewDockerExecutor(image string) (*DockerExecutor, error) {
 	cli, err := client.NewClientWithOpts(
