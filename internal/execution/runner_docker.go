@@ -16,7 +16,7 @@ type DockerExecutor struct {
 }
 
 // compile time check. if DockerExecutor is missing a method, this line
- var _ Executor = (*DockerExecutor)(nil)
+var _ Executor = (*DockerExecutor)(nil)
 
 func NewDockerExecutor(image string) (*DockerExecutor, error) {
 	cli, err := client.NewClientWithOpts(
@@ -30,19 +30,18 @@ func NewDockerExecutor(image string) (*DockerExecutor, error) {
 }
 
 func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, error) {
-	
 	cfg := &container.Config{
 		Image: d.image,
 		Cmd:   []string{"sh", "-c", command},
-		Tty:   false, //merges stdout and stderr into one stream
+		Tty:   false, // merges stdout and stderr into one stream
 	}
 
 	resp, err := d.cli.ContainerCreate(ctx, cfg, nil, nil, nil, "")
 	if err != nil {
 		return nil, fmt.Errorf("container create failed: %w", err)
 	}
-	
-	//every subsequent call (Start, Wait, Logs, Remove) needs this ID
+
+	// every subsequent call (Start, Wait, Logs, Remove) needs this ID
 	containerID := resp.ID
 
 	defer func() {
@@ -52,7 +51,6 @@ func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, erro
 			container.RemoveOptions{Force: true},
 		)
 	}()
-
 
 	if err := d.cli.ContainerStart(ctx, containerID, container.StartOptions{}); err != nil {
 		return nil, fmt.Errorf("container start failed: %w", err)
@@ -67,7 +65,7 @@ func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, erro
 		if err != nil {
 			return nil, fmt.Errorf("container wait error: %w", err)
 		}
-	case <-statusCh: //the container stopped successfully”
+	case <-statusCh: // the container stopped successfully”
 	}
 
 	out, err := d.cli.ContainerLogs(

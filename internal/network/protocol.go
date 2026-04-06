@@ -6,7 +6,7 @@ type Request struct {
 }
 
 /*
-	request.json example
+request.json example
 
 	{
 	    "_Type_": "job",
@@ -14,8 +14,8 @@ type Request struct {
 	}
 */
 type Response struct {
-	Status string `json:"status_"`
-	Message string `json:"message_"` 
+	Status  string `json:"status_"`
+	Message string `json:"message_"`
 	// json name is used during testing calls
 	// Message in GO , message in json
 	// it's a mapping layer

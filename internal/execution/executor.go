@@ -1,4 +1,4 @@
-package execution 
+package execution
 
 import (
 	"context"
@@ -11,6 +11,6 @@ type Result struct {
 }
 
 type Executor interface {
-	Run(ctx context.Context,command String ) (*Result , error )
+	Run(ctx context.Context, command string) (*Result, error)
 	Close() error
 }
