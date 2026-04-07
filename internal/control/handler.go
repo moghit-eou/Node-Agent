@@ -3,28 +3,30 @@ package control
 import (
 	"context"
 	"fmt"
-
 	"node-agent/internal/execution"
 )
 
-func HandleJob(commandPayLoad string) string {
+
+type Handler struct {
+	exec execution.Executor
+}
+
+func NewHandler(exec execution.Executor) *Handler {
+	return &Handler{exec: exec}
+}
+
+func (h *Handler) HandleJob(ctx context.Context, commandPayLoad string) (string, error) {
 	if commandPayLoad == "" {
-		return "Error : Empty command"
+		return "", fmt.Errorf("empty command")
 	}
 
-	exec, err := execution.NewDockerExecutor("alpine")
+	result, err := h.exec.Run(ctx, commandPayLoad)
 	if err != nil {
-		return fmt.Sprintf("error: %v", err)
-	}
-	defer exec.Close()
-
-	result, err := exec.Run(context.Background(), commandPayLoad)
-	if err != nil {
-		return fmt.Sprintf("Something went wrong: %v", err)
+		return "", fmt.Errorf("execution failed: %w", err)
 	}
 
-	response := fmt.Sprintf("Stdout : %s \nStderr: %s\nExistcode: %d",
+	response := fmt.Sprintf("Stdout: %s\nStderr: %s\nExitCode: %d",
 		result.Stdout, result.Stderr, result.ExitCode)
 
-	return response
+	return response, nil
 }

@@ -6,11 +6,19 @@ import (
 	"log"
 	"net"
 	"time"
-
 	"node-agent/internal/control"
+	"context"
 )
 
-func StartServer(port string) {
+type Server struct {
+	handler *control.Handler
+}
+
+func NewServer(handler *control.Handler) (*Server){
+	return &Server{handler:handler}
+}
+
+func (s *Server) Start(port string) {
 	Listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Println("Error starting server: %v\n", err)
@@ -30,16 +38,16 @@ func StartServer(port string) {
 			continue
 		}
 		log.Println("new connection from", conn.RemoteAddr())
-		go handleConnection(conn)
+		go s.handleConnection(conn)
 	}
 }
 
-func handleConnection(conn net.Conn) error {
+func (s *Server) handleConnection(conn net.Conn) error {
 	defer conn.Close()
 
-	// I still have to pay attention to DDOS attcks
-	// to do : set a timeout for the connection
+	
 	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	
 	// conn is a stream of bytes
 	// I need to decode it into a Request struct and encode the Response struct back to the client
 	decoder := json.NewDecoder(conn)
@@ -68,24 +76,20 @@ func handleConnection(conn net.Conn) error {
 		switch request.Type {
 
 		case "health-check":
-			response = Response{
-				Status:  "ok",
-				Message: request.Payload,
-			}
+			response = Response{Status: "ok", Message: "healthy"}
 
 		case "job":
-			result := control.HandleJob(request.Payload)
-
-			response = Response{
-				Status:  "success",
-				Message: result,
-			}
+			result,err := s.handler.HandleJob(context.Background(),request.Payload)
+			
+			if err != nil {
+				response = Response{Status: "error", Message: err.Error()}
+			} else {
+				response = Response{Status: "success", Message: result}
+			}			
+			
 
 		default:
-			response = Response{
-				Status:  "error",
-				Message: "Unknown request type",
-			}
+			response = Response{Status:  "error",Message: "Unknown request type"}
 
 		}
 
