@@ -16,17 +16,15 @@ func main() {
 	}
 
 	port := os.Args[1]
-	exec , err := execution.NewDockerExecutor("alpine")
-	
+	exec, err := execution.NewDockerExecutor("alpine")
 	if err != nil {
 		log.Fatalf("failed to create executor: %v", err)
 	}
 
 	defer exec.Close()
-	
+
 	handler := control.NewHandler(exec)
 	server := network.NewServer(handler)
 
 	server.Start(port)
-
 }

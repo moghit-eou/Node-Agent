@@ -1,21 +1,22 @@
 package network
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"log"
 	"net"
 	"time"
+
 	"node-agent/internal/control"
-	"context"
 )
 
 type Server struct {
 	handler *control.Handler
 }
 
-func NewServer(handler *control.Handler) (*Server){
-	return &Server{handler:handler}
+func NewServer(handler *control.Handler) *Server {
+	return &Server{handler: handler}
 }
 
 func (s *Server) Start(port string) {
@@ -45,9 +46,8 @@ func (s *Server) Start(port string) {
 func (s *Server) handleConnection(conn net.Conn) error {
 	defer conn.Close()
 
-	
 	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
-	
+
 	// conn is a stream of bytes
 	// I need to decode it into a Request struct and encode the Response struct back to the client
 	decoder := json.NewDecoder(conn)
@@ -79,17 +79,16 @@ func (s *Server) handleConnection(conn net.Conn) error {
 			response = Response{Status: "ok", Message: "healthy"}
 
 		case "job":
-			result,err := s.handler.HandleJob(context.Background(),request.Payload)
-			
+			result, err := s.handler.HandleJob(context.Background(), request.Payload)
+
 			if err != nil {
 				response = Response{Status: "error", Message: err.Error()}
 			} else {
 				response = Response{Status: "success", Message: result}
-			}			
-			
+			}
 
 		default:
-			response = Response{Status:  "error",Message: "Unknown request type"}
+			response = Response{Status: "error", Message: "Unknown request type"}
 
 		}
 
