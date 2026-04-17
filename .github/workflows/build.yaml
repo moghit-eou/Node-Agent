@@ -38,10 +38,3 @@ jobs:
         with:
           sarif_file: gosec-results.sarif
           category: go-security
-
-      - name: Upload gosec SARIF as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gosec-results
-          path: gosec-results.sarif
