@@ -39,10 +39,9 @@ jobs:
           sarif_file: gosec-results.sarif
           category: go-security
 
-      - name: Debug - check SARIF file
+      - name: Upload gosec SARIF as artifact
         if: always()
-        run: |
-          echo "=== File exists? ==="
-          ls -la gosec-results.sarif
-          echo "=== File contents ==="
-          cat gosec-results.sarif
+        uses: actions/upload-artifact@v4
+        with:
+          name: gosec-results
+          path: gosec-results.sarif
