@@ -38,3 +38,11 @@ jobs:
         with:
           sarif_file: gosec-results.sarif
           category: go-security
+
+      - name: Debug - check SARIF file
+        if: always()
+        run: |
+          echo "=== File exists? ==="
+          ls -la gosec-results.sarif
+          echo "=== File contents ==="
+          cat gosec-results.sarif
