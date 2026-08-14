@@ -22,7 +22,7 @@ func NewServer(handler *control.Handler) *Server {
 func (s *Server) Start(port string) {
 	Listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
-		log.Println("Error starting server: %v\n", err)
+		log.Print("error starting server: " + err.Error())
 		return
 	}
 
@@ -35,7 +35,7 @@ func (s *Server) Start(port string) {
 
 		conn, err := Listener.Accept()
 		if err != nil {
-			log.Println("Error accepting connection: %v\n", err)
+			log.Print("error accepting connection: " + err.Error())
 			continue
 		}
 		log.Println("new connection from", conn.RemoteAddr())
