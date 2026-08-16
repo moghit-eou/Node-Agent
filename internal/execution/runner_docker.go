@@ -57,7 +57,7 @@ func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, erro
 	}
 
 	statusCh, errCh := d.cli.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
-
+	var exitCode int64
 	select {
 	case <-ctx.Done():
 		return nil, fmt.Errorf("container timed out: %w", ctx.Err())
@@ -65,7 +65,8 @@ func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, erro
 		if err != nil {
 			return nil, fmt.Errorf("container wait error: %w", err)
 		}
-	case <-statusCh: // the container stopped successfully”
+	case status := <-statusCh:
+		exitCode = status.StatusCode
 	}
 
 	out, err := d.cli.ContainerLogs(
@@ -86,7 +87,7 @@ func (d *DockerExecutor) Run(ctx context.Context, command string) (*Result, erro
 	return &Result{
 		Stdout:   stdout.String(),
 		Stderr:   stderr.String(),
-		ExitCode: 0,
+		ExitCode: int(exitCode),
 	}, nil
 }
 
